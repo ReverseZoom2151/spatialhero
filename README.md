@@ -4,7 +4,7 @@
 
 Fine-tune LLMs to generate better 3D CAD code with multi-modal reward signals
 
-[Quick Start](#quick-start) • [Key Features](#key-features) • [Installation](#installation) • [Documentation](#documentation)
+[Quick Start](#quick-start) • [Key Features](#key-features) • [Why SpatialHero](#why-spatialhero) • [Performance](#performance)
 
 ![Python 3.8+](https://img.shields.io/badge/Python-3.8%2B-blue) ![GPT-5 Compatible](https://img.shields.io/badge/GPT--5-Compatible-green) ![Tests Passing](https://img.shields.io/badge/Tests-18%2F18%20Passing-success) ![MIT License](https://img.shields.io/badge/License-MIT-yellow)
 
@@ -59,22 +59,6 @@ python examples/demo.py
 
 ---
 
-## Installation
-
-See [QUICKSTART.md](QUICKSTART.md) for detailed installation guide.
-
----
-
-## Documentation
-
-- [QUICKSTART.md](QUICKSTART.md) - 5-minute setup guide
-- [ARCHITECTURE.md](ARCHITECTURE.md) - Technical deep dive
-- [TESTING.md](TESTING.md) - Testing guide
-- [TRAINING_TIME_ESTIMATES.md](TRAINING_TIME_ESTIMATES.md) - Training estimates
-- [More docs...](docs/)
-
----
-
 ## Why SpatialHero?
 
 | Feature | Original Proposal | SpatialHero |
@@ -102,6 +86,4 @@ MIT License
 
 ---
 
-**[Quick Start](#quick-start)** • **[Documentation](#documentation)** • **[Installation](#installation)**
-
-Made with ❤️ for the CAD AI community
+Made for the CAD AI community
