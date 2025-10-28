@@ -43,36 +43,41 @@ COMPACT_BANNER = """
 """
 
 
-def print_banner(compact=False, show_version=True, simple=None):
+def print_banner(compact=False, show_version=True):
     """
-    Print the SpatialHero ASCII banner.
+    Print the SpatialHero ASCII banner with ANSI Shadow formatting.
 
     Args:
         compact: Use compact banner for smaller terminals
         show_version: Show version number
-        simple: Force simple ASCII (auto-detects if None)
     """
-    # Auto-detect if we should use simple banner
-    if simple is None:
-        import sys
-        # Use simple banner on Windows by default to avoid encoding issues
-        simple = sys.platform == 'win32'
+    import sys
+    import io
 
-    if simple:
-        banner = SIMPLE_BANNER
-    else:
-        banner = COMPACT_BANNER if compact else BANNER
+    # Force UTF-8 encoding for Windows to display ANSI Shadow properly
+    if sys.platform == 'win32':
+        try:
+            # Reconfigure stdout to use UTF-8
+            sys.stdout.reconfigure(encoding='utf-8')
+        except AttributeError:
+            # Fallback for older Python versions
+            sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+    banner = COMPACT_BANNER if compact else BANNER
 
     try:
         print(banner)
-    except UnicodeEncodeError:
-        # Fallback to simple if Unicode fails
+        print(f"  {TAGLINE}")
+        if show_version:
+            print(f"  {VERSION}")
+        print()
+    except (UnicodeEncodeError, Exception) as e:
+        # Ultimate fallback to simple ASCII if everything fails
         print(SIMPLE_BANNER)
-
-    print(f"  {TAGLINE}")
-    if show_version:
-        print(f"  {VERSION}")
-    print()
+        print(f"  {TAGLINE}")
+        if show_version:
+            print(f"  {VERSION}")
+        print()
 
 
 def print_header(title, width=60):
