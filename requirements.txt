@@ -5,10 +5,9 @@ pillow>=10.0.0
 pyyaml>=6.0
 
 # 3D Rendering
-pyvista>=0.43.0  # 3D visualization and rendering (fallback)
+pyvista>=0.43.0  # 3D visualization and rendering
 numpy-stl>=3.0.0  # STL file handling
-vtk>=9.2.0  # Visualization Toolkit (installed with PyVista)
-pythonOCC-core>=7.7.0  # OCCT-based professional CAD rendering (recommended)
+# pythonOCC-core>=7.7.0  # Optional: OCCT rendering (not available for Python 3.12 yet)
 
 # Machine Learning (optional - only for training)
 torch>=2.0.0

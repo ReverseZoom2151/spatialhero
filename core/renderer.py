@@ -98,11 +98,10 @@ class CADRenderer:
             PIL Image or None if rendering fails
         """
         try:
-            # Try renderers in order of quality: OCCT > PyVista > Fallback
+            # Use PyVista for real 3D rendering
             try:
-                # First try OCCT (best quality for CAD)
-                from core.renderer_occt import get_best_renderer
-                renderer_3d = get_best_renderer(
+                from core.renderer_3d import get_renderer
+                renderer_3d = get_renderer(
                     width=self.width,
                     height=self.height,
                     background='white'
@@ -111,7 +110,7 @@ class CADRenderer:
                 return img
 
             except ImportError:
-                # Fallback to placeholder if no renderers available
+                # Fallback to placeholder if PyVista not available
                 img = Image.new('RGB', (self.width, self.height), self.background_color)
                 draw = ImageDraw.Draw(img)
 
@@ -120,7 +119,7 @@ class CADRenderer:
                 draw.text((10, 10), label, fill=(50, 50, 50))
 
                 # Add note
-                note = "(Install pythonOCC-core or PyVista for 3D rendering)"
+                note = "(Install PyVista for 3D rendering: pip install pyvista)"
                 draw.text((10, 40), note, fill=(100, 100, 100))
 
                 return img
