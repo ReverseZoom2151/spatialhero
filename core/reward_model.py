@@ -150,14 +150,24 @@ class RewardModel:
             try:
                 workplane = self.executor.execute(code)
                 if workplane is not None:
+                    print(f"  [DEBUG] Rendering {render_views or 'default'} views...")
                     renders = self.renderer.render_multiview(workplane, render_views)
-                    visual_score, visual_feedback = self._evaluate_visual_quality(
-                        renders, prompt
-                    )
-                    components.visual_quality = visual_score
-                    feedback_parts.append(visual_feedback)
+                    print(f"  [DEBUG] Rendered {len(renders)} views successfully")
+
+                    if renders:
+                        visual_score, visual_feedback = self._evaluate_visual_quality(
+                            renders, prompt
+                        )
+                        components.visual_quality = visual_score
+                        feedback_parts.append(f"Visual: {visual_feedback[:100]}")
+                        print(f"  [DEBUG] Visual score: {visual_score:.3f}")
+                    else:
+                        feedback_parts.append("No renders produced")
+                else:
+                    feedback_parts.append("Failed to execute code for rendering")
             except Exception as e:
                 feedback_parts.append(f"Visual evaluation failed: {str(e)}")
+                print(f"  [DEBUG] Visual eval error: {e}")
 
         # 4. Generate comprehensive feedback
         if validation.warnings:
@@ -285,21 +295,60 @@ FEEDBACK: <text>"""
 
             response_text = response.choices[0].message.content
 
-            # Parse score and feedback
+            # Parse score and feedback with better extraction
             score = 0.5  # Default
             feedback = response_text
 
-            if "SCORE:" in response_text:
+            # Try to extract score from various formats
+            if "SCORE:" in response_text.upper():
                 try:
-                    score_line = [line for line in response_text.split('\n') if 'SCORE:' in line][0]
-                    score = float(score_line.split('SCORE:')[1].strip())
-                    score = np.clip(score, 0.0, 1.0)
+                    # Find line with score
+                    for line in response_text.split('\n'):
+                        if 'SCORE' in line.upper() and ':' in line:
+                            # Extract number after colon
+                            score_part = line.split(':', 1)[1].strip()
+                            # Parse first number found
+                            import re
+                            numbers = re.findall(r'0?\.\d+|[01]\.?\d*', score_part)
+                            if numbers:
+                                score = float(numbers[0])
+                                score = np.clip(score, 0.0, 1.0)
+                                break
+                except Exception as e:
+                    print(f"Score parsing warning: {e}")
+                    pass
+
+            # Extract feedback section
+            if "FEEDBACK:" in response_text.upper():
+                try:
+                    parts = response_text.upper().split('FEEDBACK:', 1)
+                    if len(parts) > 1:
+                        # Get the feedback part from original text (preserve case)
+                        idx = response_text.upper().index('FEEDBACK:') + len('FEEDBACK:')
+                        feedback = response_text[idx:].strip()
                 except:
                     pass
 
-            if "FEEDBACK:" in response_text:
+            # If no structured format, try to extract score from natural text
+            if score == 0.5 and any(word in response_text.lower() for word in ['rate', 'score', 'quality']):
                 try:
-                    feedback = response_text.split('FEEDBACK:')[1].strip()
+                    import re
+                    # Look for patterns like "8/10" or "0.8" or "80%"
+                    patterns = [
+                        r'(\d+)/10',  # X/10 format
+                        r'(\d+)%',     # X% format
+                        r'0?\.\d+',    # 0.X format
+                    ]
+                    for pattern in patterns:
+                        matches = re.findall(pattern, response_text)
+                        if matches:
+                            val = float(matches[0])
+                            if val > 1:  # Percentage or /10
+                                score = val / (100 if '%' in pattern else 10)
+                            else:
+                                score = val
+                            score = np.clip(score, 0.0, 1.0)
+                            break
                 except:
                     pass
 

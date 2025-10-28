@@ -11,13 +11,13 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import cadquery as cq
 from core.renderer_3d import get_renderer, PYVISTA_AVAILABLE
+from utils.banner import print_banner, print_header
 
 
 def test_simple_rendering():
     """Test rendering a simple shape."""
-    print("="*60)
-    print("Testing 3D Rendering")
-    print("="*60)
+    print_banner(compact=False, show_version=True)
+    print_header("Testing 3D Rendering")
 
     # Check if PyVista is available
     print(f"\nPyVista available: {PYVISTA_AVAILABLE}")

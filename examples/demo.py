@@ -29,21 +29,23 @@ except ImportError:
 
 from core import CodeGenerator, CADRenderer, RewardModel
 from utils import load_config
+from utils.banner import print_banner, print_header
 
 
 def main():
     """Run a simple demo."""
-    print("="*60)
-    print("SpatialHero Demo - Improved Architecture")
-    print("="*60)
+    # Show banner
+    print_banner(compact=False, show_version=True)
+
+    print_header("SpatialHero Demo - Improved Architecture")
 
     # Load configuration
     print("\n1. Loading configuration...")
     try:
         config = load_config()
-        print("   ✓ Configuration loaded")
+        print("   [OK] Configuration loaded")
     except Exception as e:
-        print(f"   ✗ Failed to load config: {e}")
+        print(f"   [ERROR] Failed to load config: {e}")
         return
 
     # Initialize components
@@ -51,14 +53,14 @@ def main():
 
     try:
         generator = CodeGenerator()
-        print("   ✓ Code generator initialized")
+        print("   [OK] Code generator initialized")
     except Exception as e:
-        print(f"   ✗ Failed to initialize generator: {e}")
+        print(f"   [ERROR] Failed to initialize generator: {e}")
         print("   Make sure OPENAI_API_KEY is set in your .env file")
         return
 
     renderer = CADRenderer()
-    print("   ✓ Renderer initialized")
+    print("   [OK] Renderer initialized")
 
     try:
         # Check if PyVista is available for real 3D rendering
@@ -70,12 +72,12 @@ def main():
         reward_model = RewardModel(use_visual_eval=use_visual)
 
         if use_visual:
-            print("   ✓ Reward model initialized (visual eval: enabled with PyVista)")
+            print("   [OK] Reward model initialized (visual eval: enabled with PyVista)")
         else:
-            print("   ✓ Reward model initialized (visual eval: disabled)")
+            print("   [OK] Reward model initialized (visual eval: disabled)")
             print("      For visual evaluation, install: pip install pyvista numpy-stl")
     except Exception as e:
-        print(f"   ✗ Failed to initialize reward model: {e}")
+        print(f"   [ERROR] Failed to initialize reward model: {e}")
         print("   Make sure OPENAI_API_KEY is set in your .env file")
         return
 
@@ -86,10 +88,10 @@ def main():
     result = generator.generate(prompt)
 
     if not result.success:
-        print(f"   ✗ Generation failed: {result.error}")
+        print(f"   [ERROR] Generation failed: {result.error}")
         return
 
-    print("   ✓ Code generated successfully")
+    print("   [OK] Code generated successfully")
     print(f"\n   Generated code:")
     print("   " + "-"*56)
     for line in result.code.split('\n')[:15]:  # Show first 15 lines
@@ -150,14 +152,10 @@ def main():
                       f"(expected: {comp['expected']:.1f}, "
                       f"error: {comp['relative_error']:.1%})")
 
-    print("\n" + "="*60)
-    print("Demo completed!")
-    print("="*60)
+    print_header("Demo Completed!")
 
     # Compare with original architecture
-    print("\n" + "="*60)
-    print("Comparison with Original Architecture")
-    print("="*60)
+    print_header("Comparison with Original Architecture")
     print("\nOriginal approach would only provide:")
     print("  - Single visual quality score from GPT-4V")
     print("  - No code validation")
@@ -182,9 +180,7 @@ def main():
     print("="*60)
 
     # Summary and next steps
-    print("\n" + "="*60)
-    print("Summary and Next Steps")
-    print("="*60)
+    print_header("Summary and Next Steps")
 
     print(f"\nYour SpatialHero system achieved {evaluation.total_reward:.1%} quality!")
 

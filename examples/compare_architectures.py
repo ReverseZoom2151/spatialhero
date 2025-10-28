@@ -11,6 +11,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from core import CodeGenerator, RewardModel
+from utils.banner import print_banner, print_header
 import time
 
 
@@ -157,9 +158,8 @@ def improved_architecture(prompt: str, expected_dims: dict) -> dict:
 
 def main():
     """Compare architectures."""
-    print("="*60)
-    print("ARCHITECTURE COMPARISON")
-    print("="*60)
+    print_banner(compact=False, show_version=True)
+    print_header("Architecture Comparison")
 
     prompt = "Create a simple chair with four legs, a seat, and a backrest"
     expected_dims = {
