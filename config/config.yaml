@@ -1,0 +1,82 @@
+# SpatialHero Configuration
+
+# Model Configuration
+models:
+  code_generator:
+    provider: "openai"
+    model: "gpt-5-2025-08-07"
+    temperature: 0.7
+    max_tokens: 8192  # High limit for GPT-5 reasoning tokens
+    # Note: GPT-5 uses extensive reasoning tokens (2000-4000+)
+    # For simpler/cheaper use: "gpt-5-mini-2025-08-07"
+
+  reward_model:
+    provider: "openai"
+    model: "gpt-5-mini-2025-08-07"  # Using mini - Pro has API compatibility issues
+    temperature: 0.0
+    max_tokens: 1024
+
+  validation_model:
+    provider: "openai"
+    model: "gpt-5-mini-2025-08-07"
+    temperature: 0.0
+    max_tokens: 512
+
+# Rendering Configuration
+rendering:
+  width: 800
+  height: 600
+  views:
+    - "isometric"
+    - "front"
+    - "top"
+    - "side"
+  background_color: [240, 240, 240]
+
+# Reward Configuration
+reward:
+  weights:
+    code_valid: 0.20
+    dimension_accuracy: 0.30
+    visual_quality: 0.30
+    topology_valid: 0.20
+
+  thresholds:
+    min_valid_score: 0.5
+    dimension_tolerance: 0.05  # 5% tolerance
+
+# Training Configuration
+training:
+  ppo:
+    learning_rate: 1.0e-5
+    batch_size: 4
+    mini_batch_size: 2
+    epochs: 4
+    gamma: 0.99
+    gae_lambda: 0.95
+    clip_range: 0.2
+    value_loss_coef: 0.5
+    entropy_coef: 0.01
+    max_grad_norm: 0.5
+
+  checkpoint:
+    save_every: 100
+    keep_last: 3
+
+  logging:
+    log_every: 10
+    eval_every: 50
+
+# Dataset Configuration
+dataset:
+  seed_prompts_path: "data/seed_prompts.json"
+  max_samples: 1000
+  train_split: 0.8
+  val_split: 0.1
+  test_split: 0.1
+
+# Output Configuration
+output:
+  renders_dir: "outputs/renders"
+  checkpoints_dir: "outputs/checkpoints"
+  logs_dir: "outputs/logs"

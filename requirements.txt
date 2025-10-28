@@ -1,0 +1,30 @@
+# Core dependencies
+cadquery>=2.4.0
+numpy>=1.24.0
+pillow>=10.0.0
+pyyaml>=6.0
+
+# 3D Rendering
+pyvista>=0.43.0  # 3D visualization and rendering
+numpy-stl>=3.0.0  # STL file handling
+vtk>=9.2.0  # Visualization Toolkit (installed with PyVista)
+
+# Machine Learning (optional - only for training)
+torch>=2.0.0
+transformers>=4.30.0
+accelerate>=0.20.0
+trl>=0.7.0  # Transformer Reinforcement Learning
+
+# OpenAI API
+openai>=1.0.0
+
+# Utilities
+python-dotenv>=1.0.0
+tqdm>=4.65.0
+matplotlib>=3.7.0
+opencv-python>=4.8.0
+
+# Development
+pytest>=7.4.0
+black>=23.0.0
+flake8>=6.0.0
